@@ -1,0 +1,11 @@
+{
+    "nombre": "Restaurante Chirripó",
+    "capacidad": 50,
+    "mesas_max": 5,
+    "menu": {
+        "Chifrijo": 15,
+        "Olla de Carne": 10,
+        "Rice and Beans": 12,
+        "Caldosas": 3
+    }
+}
