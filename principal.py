@@ -150,12 +150,13 @@ def opcion_cobrar_mesa(restaurante):
         print("No hay mesas listas para cobrar.")
 
     print()
-    print("=====Mesas listas para cobrar=====")
+    print("===== Mesas listas para cobrar =====")
     mesa = elegir_mesa(mesas)
 
 #         ---------Cuenta----------
     print()
     print(f"Cuenta de la mesa {mesa['num_mesa']}:")
+    print()
     for plato in sorted(set(mesa["pedidos"])):
         cantidad = mesa["pedidos"].count(plato)
         precio = restaurante["menu"][plato]
@@ -172,15 +173,17 @@ def opcion_cobrar_mesa(restaurante):
     if propina >0:
         print(f"Propina ({porcentaje}%): {propina} €")
     print(f"Total a pagar: {total} €")
+    print()
     
 #         ---------Dividir cuenta----------
     if mesa["clientes"] > 1 and preguntar_si_no("Desean dividir la cuenta? (s/n): "):
-        personas = pedir_numero(f"¿Entre cuantas personas? (2-{mesa['clientes']}) ", 2, mesa['clientes'])
+        personas = pedir_numero(f"¿Entre cuantas personas? (2-{mesa['clientes']}): ", 2, mesa['clientes'])
         por_persona = round(total/personas, 2)
-        print("Cada persona paga: {por_persona} €")
+        print(f"Cada persona paga: {por_persona} €")
    
     print()
-    print(f"Mesa {mesa['num_mesa']} liberada. ¡Gracias por su visita! ¡PURA VIDA!")
+    print(f"Mesa {mesa['num_mesa']} liberada.")
+    print("¡Gracias por su visita! ¡PURA VIDA!")
     print()
     print(f"Ganacias de la noche: {restaurante['ganancias']} €")
 
@@ -199,11 +202,11 @@ def pedir_precio(mensaje):
         try: 
             precio= float(texto)
         except ValueError: 
-            print("Escribe un precio valido, por ejemplo 12 o 0,70")
+            print("Escribe un precio valido, por ejemplo 12 o 0.70")
             continue
         if precio > 0:
-            if precio .is_integer():
-                return int precio
+            if precio.is_integer():
+                return int(precio)
             return round(precio, 2)
         print("El precio tiene que ser mayor que 0.")
 
@@ -212,10 +215,11 @@ def opcion_ampliar_menu(restaurante):
     if nombre == "": 
         print("El nombre no puede estar vacio.")
         return
+    
     existente = pedidos.buscar_plato(restaurante, nombre)
-    if existente is not none:
-        print(f"{existente} ya esta en a carta({restaurante['menu'][existente]} €).")
-        if not preguntar_si_no("Quieres cambiar su precio? (s/n):"):
+    if existente is not None:
+        print(f"{existente} ya esta en la carta ({restaurante['menu'][existente]} €).")
+        if not preguntar_si_no("¿Quieres cambiar su precio? (s/n):"):
             return
         nombre = existente
 
