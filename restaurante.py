@@ -11,3 +11,4 @@ def crear_restaurante(nombre, capacidad, mesas_max, menu):
     }
 
     return restaurante
+
