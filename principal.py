@@ -3,6 +3,7 @@ import restaurante as rest
 import grupos 
 import pedidos
 import imagenes
+import cobros
 
 #         ---------Cargar restaurante----------  
 def mostrar_menu():
@@ -82,6 +83,7 @@ def opciones_cargar_grupo(restaurante):
 #         ---------Tomar pedido----------  
 
 def mostrar_carta(restaurante):
+    print()
     print("Menu:")
     for plato, precio in restaurante["menu"].items():
         print(f"   - {plato}: {precio} € ") 
@@ -125,21 +127,71 @@ def opcion_tomar_pedido(restaurante):
                 if ver == "s":
                     if not imagenes.mostrar_imagen_plato(plato):
                         print("No tenemos foto de este plato todavia")
-                lista_platos.append(plato)
+                cantidad = pedir_numero(f"Cuantos {plato}?: ", 1, 10)
+                for _ in range(cantidad):
+                    lista_platos.append(plato)
 
                 otro = input("Desea algo mas? (s/n): ").strip().lower()
                 if otro != "s":
                     break
 
         pedidos.registrar_pedido(mesa, lista_platos)
+        print()
         print(f"Pedido de la mesa {mesa['num_mesa']} anotado: {', '.join(lista_platos)}")
 
         otra = input("Atendemos otra mesa? (s/n): ").strip().lower()
         if otra != "s":
             return
 
-       
+#         ---------Cobros----------  
+def opcion_cobrar_mesa(restaurante):
+    mesas = cobros.mesas_servidas(restaurante)
+    if not mesas:
+        print("No hay mesas listas para cobrar.")
 
+    print()
+    print("=====Mesas listas para cobrar=====")
+    mesa = elegir_mesa(mesas)
+
+#         ---------Cuenta----------
+    print()
+    print(f"Cuenta de la mesa {mesa['num_mesa']}:")
+    for plato in sorted(set(mesa["pedidos"])):
+        cantidad = mesa["pedidos"].count(plato)
+        precio = restaurante["menu"][plato]
+        print(f" {cantidad} x {plato} ({precio} € ) = {cantidad * precio} €")
+
+#         ---------Propina----------
+    porcentaje = 0
+    if preguntar_si_no("¿Desea dejar propina? (s/n): "):
+        porcentaje = pedir_numero("¿Que porcentaje? (por ejemplo 5, 10 o 15): ", 1, 100)
+
+#         ---------Total----------
+    subtotal, propina, total = cobros.cobrar_y_liberar(restaurante, mesa, porcentaje)
+    print(f"\nSubtotal: {subtotal} €")
+    if propina >0:
+        print(f"Propina ({porcentaje}%): {propina} €")
+    print(f"Total a pagar: {total} €")
+    
+#         ---------Dividir cuenta----------
+    if mesa["clientes"] > 1 and preguntar_si_no("Desean dividir la cuenta? (s/n): "):
+        personas = pedir_numero(f"¿Entre cuantas personas? (2-{mesa['clientes']}) ", 2, mesa['clientes'])
+        por_persona = round(total/personas, 2)
+        print("Cada persona paga: {por_persona} €")
+   
+    print()
+    print(f"Mesa {mesa['num_mesa']} liberada. ¡Gracias por su visita! ¡PURA VIDA!")
+    print()
+    print(f"Ganacias de la noche: {restaurante['ganancias']} €")
+
+def preguntar_si_no(mensaje):
+    while True:
+        respuesta= input(mensaje).strip().lower()
+        if respuesta in ("s", "si"):
+            return True
+        if respuesta in ("n", "no"):
+            return False
+        print("Responde solo con 's' (si) o 'n' (no), por favor.")
     
 #         ---------Principal----------  
 def pausa():
@@ -178,7 +230,9 @@ def main():
         elif opcion == "2":
             opciones_cargar_grupo(restaurante)
         elif opcion == "3":
-                    opcion_tomar_pedido(restaurante)
+            opcion_tomar_pedido(restaurante)
+        elif opcion == "4":
+            opcion_cobrar_mesa(restaurante)
         else: print("Pendiente")
         pausa()
         

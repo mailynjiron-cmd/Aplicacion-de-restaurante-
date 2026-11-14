@@ -6,7 +6,7 @@ def crear_restaurante(nombre, capacidad, mesas_max, menu):
         "menu": menu,
         "mesas": [],
         "ocupacion": 0,
-        "ganacias": 0,
+        "ganancias": 0,
         "siguiente_mesa": 1
     }
 
