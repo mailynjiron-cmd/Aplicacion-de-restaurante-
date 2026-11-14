@@ -192,6 +192,39 @@ def preguntar_si_no(mensaje):
         if respuesta in ("n", "no"):
             return False
         print("Responde solo con 's' (si) o 'n' (no), por favor.")
+
+def pedir_precio(mensaje):
+    while True:
+        texto = input(mensaje).replace(",", ".")
+        try: 
+            precio= float(texto)
+        except ValueError: 
+            print("Escribe un precio valido, por ejemplo 12 o 0,70")
+            continue
+        if precio > 0:
+            if precio .is_integer():
+                return int precio
+            return round(precio, 2)
+        print("El precio tiene que ser mayor que 0.")
+
+def opcion_ampliar_menu(restaurante):
+    nombre = input("Nombre del plato: ").strip()
+    if nombre == "": 
+        print("El nombre no puede estar vacio.")
+        return
+    existente = pedidos.buscar_plato(restaurante, nombre)
+    if existente is not none:
+        print(f"{existente} ya esta en a carta({restaurante['menu'][existente]} €).")
+        if not preguntar_si_no("Quieres cambiar su precio? (s/n):"):
+            return
+        nombre = existente
+
+    precio = pedir_precio("Precio: ")
+    rest.anadir_plato(restaurante, nombre, precio)
+
+    if archivos.guardar_restaurante(restaurante):
+        print(f"{nombre} guardado en la carta a {precio} €.")
+        
     
 #         ---------Principal----------  
 def pausa():
@@ -233,6 +266,8 @@ def main():
             opcion_tomar_pedido(restaurante)
         elif opcion == "4":
             opcion_cobrar_mesa(restaurante)
+        elif opcion == "5":
+            opcion_ampliar_menu(restaurante)
         else: print("Pendiente")
         pausa()
         

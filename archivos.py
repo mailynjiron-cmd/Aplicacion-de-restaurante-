@@ -43,3 +43,19 @@ def cargar_restaurante(ruta_archivo):
 
     restaurante["ruta_json"] = ruta_archivo #me ayuda a saber donde guarde el menu 
     return restaurante
+
+def guardar_restaurante(restaurante):
+    datos = { 
+        "nombre": restaurante ["nombre"],
+        "capacidad": restaurante["capacidad"],
+        "mesas_max": restaurante["mesas_max"],
+        "menu": restaurante["menu"]
+        }
+    try: 
+        with open(restaurante["ruta_json"], "w", encoding="utf-8")as archivo:
+            json.dump(datos, archivo, ensure_ascii=False, indent=4)
+        return True
+    except OSError:
+        print("No se pudo guardar el menú")
+        return False
+    
