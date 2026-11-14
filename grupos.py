@@ -1,31 +1,41 @@
 import json
+import archivos
+
+#         ---------Sentar grupos----------  
+
+def hay_sitio(restaurante, clientes):
+
+    cabe_gente = restaurante["ocupacion"] + clientes <= restaurante["capacidad"]
+    cabe_mesa = len(restaurante["mesas"]) < restaurante["mesas_max"]
+    return cabe_gente and cabe_mesa
+
+def sentar_grupo(restaurante, clientes): 
+
+    if not hay_sitio(restaurante, clientes):
+        return None
+
+    num = restaurante["siguiente_mesa"]
+    mesa = {"num_mesa": num, "clientes": clientes, "pedidos": []}
+
+    restaurante["mesas"].append(mesa)
+    restaurante["ocupacion"] += clientes
+    restaurante["siguiente_mesa"] +=1
+    return num
+
 
 def cargar_grupos(restaurante, ruta_archivo):
 
-    archivo = open(ruta_archivo, "r", encoding="utf-8")
-    grupos = json.load(archivo)
-    archivo.close()
+    datos = archivos.leer_json(ruta_archivo)
+    if datos is None or not isinstance(datos, list):
+        return None
 
-    for grupo in grupos:
+    resultados = []
+    for grupo in datos:
+        if isinstance(grupo, dict) and isinstance(grupo.get("clientes"), int) and grupo["clientes"] > 0:
+            num = sentar_grupo(restaurante, grupo["clientes"])
+            resultados.append((grupo["clientes"], num))
+    return resultados 
 
-        clientes = grupo["clientes"]
 
-        num_mesas = len(restaurante["mesas"]) + 1
 
-        if (restaurante["ocupacion"]+ clientes <= restaurante["capacidad"]
-            and len(restaurante["mesas"]) < restaurante["mesas_max"]):
-
-            nueva_mesa = {
-                "num_mesa": num_mesas,
-                "clientes": clientes,
-                "atendida": False
-            }
-
-            restaurante["mesas"].append(nueva_mesa)
-            restaurante["ocupacion"] += clientes
-
-            print("Grupo sentado en la mesa:", num_mesas)
-
-        else:
-            print("No hay espacio para un grupo de:", clientes, "clientes.")
-    return restaurante        
+    
