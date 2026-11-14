@@ -12,3 +12,6 @@ def crear_restaurante(nombre, capacidad, mesas_max, menu):
 
     return restaurante
 
+def anadir_plato(restaurante, nombre, precio):
+    restaurante["menu"][nombre] = precio
+
