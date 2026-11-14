@@ -229,7 +229,40 @@ def opcion_ampliar_menu(restaurante):
     if archivos.guardar_restaurante(restaurante):
         print(f"{nombre} guardado en la carta a {precio} €.")
         
+def consultar_estado(restaurante):
+    print("=======RESTAURANTE CHIRRIPÓ=======")
+    print()    
+    azul = "\033[34m"
+    blanco = "\033[97m"
+    rojo = "\033[31m"
+    reset = "\033[0m"
     
+    print(azul + "     ████████████████████")
+    print(blanco + "     ████████████████████")
+    print(rojo + "     ████████████████████")
+    print(rojo + "     ████████████████████")
+    print(blanco + "     ████████████████████")
+    print(azul + "     ████████████████████" + reset)
+    print()
+    print(f"Capacidad: {restaurante['capacidad']} personas")
+    print(f"Personas ahora: {restaurante['ocupacion']} de {restaurante['capacidad']}")
+    print(f"Mesas ocupadas: {len(restaurante['mesas'])} de {restaurante['mesas_max']}")
+
+    print("Mesas:")
+    if not restaurante["mesas"]:
+        print(   "(No hay mesas ocupadas)")
+    for mesa in restaurante["mesas"]:
+        if mesa["pedidos"]:
+            estado = "con pedido: "+", ".join(mesa["pedidos"])
+        else:
+            estado = "Esperando para pedir"
+        print(f"    Mesa {mesa['num_mesa']}: {mesa["clientes"]} personas, {estado}")
+
+    print()
+    mostrar_carta(restaurante)
+
+    print(f"  Ganancias de la noche: {restaurante['ganancias']} €")
+
 #         ---------Principal----------  
 def pausa():
     input("\nPulsa Enter para volver al menú...")
@@ -272,7 +305,8 @@ def main():
             opcion_cobrar_mesa(restaurante)
         elif opcion == "5":
             opcion_ampliar_menu(restaurante)
-        else: print("Pendiente")
+        elif opcion == "6":
+            consultar_estado(restaurante)
         pausa()
         
 if __name__ == "__main__":
