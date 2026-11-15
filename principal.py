@@ -27,7 +27,7 @@ def mostrar_menu():
     print("2. Recibir grupos que llegan")
     print("3. Tomar el pedido de una mesa")
     print("4. Cobrar mesa")
-    print("5. Añadir un plato a la carta")
+    print("5. Modificar la carta")
     print("6. Consultar estado")
     print("7. Cerrar el restaurante")
     print("==================================")
